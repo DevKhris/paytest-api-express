@@ -40,11 +40,13 @@ Authorization: Bearer <sessionToken>
 ```typescript
 {
   id: string           // Único, formato "ACC_{nanoid}"
-  userId: string       // FK a User, único
-  createdAt: Date
-  updatedAt: Date
+  userId: string      // FK a User, único, VARCHAR(12)
+  createdAt: Date     // Timestamp
+  updatedAt: Date     // Timestamp
 }
 ```
+
+**Nota:** El balance se calcula dinámicamente desde transactions. NO se almacena en la tabla.
 
 ---
 
@@ -67,7 +69,9 @@ balance = Σ(INCOME amounts) - Σ(SPEND amounts) - Σ(REQUEST amounts)
 
 - La entidad Account no almacena el balance como campo
 - El balance se calcula aggregando todas las transacciones de la cuenta
+- Fórmula: `balance = Σ(INCOME amounts) - Σ(SPEND amounts) - Σ(REQUEST amounts)`
 - Para mejor rendimiento, se puede cachear el balance y actualizarlo con cada transacción (Write-through cache)
+- Uso de DECIMAL(15,2) para montos con precisión de 2 decimales
 
 ---
 

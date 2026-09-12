@@ -130,6 +130,16 @@ Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko)
 
 ---
 
+## Índices de Base de Datos
+
+| Índice | Columna | Tipo | Descripción |
+|--------|---------|------|-------------|
+| `idx_sessions_token` | token | UNIQUE | Búsqueda por token |
+| `idx_sessions_user` | userId | INDEX | Sesiones por usuario |
+| `idx_sessions_expires` | expiresAt | INDEX | Limpieza de expiradas |
+
+---
+
 ## Cleanup de Sesiones
 
 Sesiones expiradas se limpian después de 48 horas de expiración:

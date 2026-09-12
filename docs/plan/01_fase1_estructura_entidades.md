@@ -37,14 +37,14 @@ interface ApiResponse<T> {
 ```typescript
 @Entity('users')
 class User {
-  @PrimaryColumn({ type: 'varchar', length: 20, unique: true })
+  @PrimaryColumn({ type: 'varchar', length: 12, unique: true })
   id: string
-
-  @Column({ type: 'varchar', length: 255 })
-  passwordHash: string
 
   @Column({ type: 'varchar', length: 50 })
   name: string
+
+  @Column({ type: 'varchar', length: 255 })
+  passwordHash: string
 
   @CreateDateColumn()
   createdAt: Date
@@ -62,10 +62,10 @@ class User {
 ```typescript
 @Entity('accounts')
 class Account {
-  @PrimaryColumn({ type: 'varchar', length: 20, unique: true })
+  @PrimaryColumn({ type: 'varchar', length: 16 })
   id: string
 
-  @Column({ type: 'varchar', length: 20 })
+  @Column({ type: 'varchar', length: 12 })
   userId: string
 
   @OneToOne(() => User, (user) => user.account)
@@ -84,10 +84,10 @@ class Account {
 ```typescript
 @Entity('transactions')
 class Transaction {
-  @PrimaryColumn({ type: 'varchar', length: 30 })
+  @PrimaryColumn({ type: 'varchar', length: 16 })
   id: string
 
-  @Column({ type: 'varchar', length: 20 })
+  @Column({ type: 'varchar', length: 16 })
   accountId: string
 
   @Column({ type: 'enum', enum: TransactionType })
@@ -96,13 +96,13 @@ class Transaction {
   @Column({ type: 'decimal', precision: 15, scale: 2 })
   amount: number
 
-  @Column({ type: 'varchar', length: 50, unique: true })
+  @Column({ type: 'varchar', length: 64, unique: true })
   idempotencyKey: string
 
   @Column({ type: 'varchar', length: 255, nullable: true })
   description: string
 
-  @Column({ type: 'varchar', length: 20, nullable: true })
+  @Column({ type: 'varchar', length: 12, nullable: true })
   relatedUserId: string
 
   @CreateDateColumn()
@@ -118,13 +118,13 @@ class Transaction {
 ```typescript
 @Entity('contacts')
 class Contact {
-  @PrimaryColumn({ type: 'varchar', length: 30 })
+  @PrimaryColumn({ type: 'varchar', length: 36 })
   id: string
 
-  @Column({ type: 'varchar', length: 20 })
+  @Column({ type: 'varchar', length: 12 })
   ownerId: string
 
-  @Column({ type: 'varchar', length: 20 })
+  @Column({ type: 'varchar', length: 12 })
   contactUserId: string
 
   @CreateDateColumn()
@@ -140,33 +140,35 @@ class Contact {
 }
 ```
 
+**Nota:** `contactName` NO se almacena - se obtiene consultando `users` joined.
+
 ### `src/entities/Session.ts`
 ```typescript
 @Entity('sessions')
 class Session {
-  @PrimaryColumn({ type: 'varchar', length: 30 })
+  @PrimaryColumn({ type: 'varchar', length: 36 })
   id: string
 
-  @Column({ type: 'varchar', length: 64, unique: true })
+  @Column({ type: 'varchar', length: 512, unique: true })
   token: string
 
-  @Column({ type: 'varchar', length: 20 })
+  @Column({ type: 'varchar', length: 12 })
   userId: string
 
-  @Column({ type: 'varchar', length: 45 })
+  @Column({ type: 'varchar', length: 45, nullable: true })
   ipAddress: string
 
-  @Column({ type: 'varchar', length: 500 })
+  @Column({ type: 'varchar', length: 512, nullable: true })
   userAgent: string
 
   @Column({ type: 'enum', enum: SessionStatus, default: SessionStatus.ACTIVE })
   status: SessionStatus
 
-  @Column({ type: 'timestamp' })
-  expiresAt: Date
-
   @CreateDateColumn()
   createdAt: Date
+
+  @Column({ type: 'timestamp' })
+  expiresAt: Date
 
   @ManyToOne(() => User)
   @JoinColumn({ name: 'userId' })

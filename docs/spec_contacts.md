@@ -118,12 +118,16 @@ Authorization: Bearer <sessionToken>
 ### Contact
 ```typescript
 {
-  id: string           // Único
-  ownerId: string      // FK a User (propietario de la lista)
-  contactUserId: string // FK a User (usuario agregado como contacto)
+  id: string           // VARCHAR(36), UUID
+  ownerId: string      // FK a User, VARCHAR(12)
+  contactUserId: string // FK a User, VARCHAR(12)
   createdAt: Date
 }
 ```
+
+**Constraint:** `UNIQUE unique_contact (ownerId, contactUserId)`
+
+**Nota:** El `name` del contacto se obtiene consultando `users` con join, NO se almacena en contacts.
 
 ---
 

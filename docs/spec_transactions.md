@@ -118,13 +118,13 @@ Authorization: Bearer <sessionToken>
 ### Transaction
 ```typescript
 {
-  id: string                    // Único, formato "TXN_{nanoid}"
-  accountId: string             // FK a Account
+  id: string                    // Único, formato "TXN_{nanoid}", VARCHAR(16)
+  accountId: string             // FK a Account, VARCHAR(16)
   type: 'INCOME' | 'SPEND' | 'REQUEST'
-  amount: number               // Decimal, 2 posiciones
-  idempotencyKey: string        // Único, para evitar duplicados
-  description: string | null   // Opcional
-  relatedUserId: string | null // Usuario relacionado (destinatario/remitente)
+  amount: number               // DECIMAL(15,2)
+  idempotencyKey: string        // Único, VARCHAR(64)
+  description: string | null   // VARCHAR(255), opcional
+  relatedUserId: string | null // VARCHAR(12), usuario relacionado
   createdAt: Date
 }
 ```

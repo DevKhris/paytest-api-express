@@ -147,7 +147,7 @@ Authorization: Bearer <sessionToken>
 ### User
 ```typescript
 {
-  id: string           // Alfanumérico, ~12 caracteres, único
+  id: string           // Alfanumérico, 12 caracteres, único
   name: string         // 2-50 caracteres
   passwordHash: string // Hash bcrypt
   createdAt: Date
@@ -158,14 +158,14 @@ Authorization: Bearer <sessionToken>
 ### Session
 ```typescript
 {
-  id: string           // Único
-  token: string        // 32+ caracteres, único
-  userId: string       // FK a User
-  ipAddress: string    // IP del cliente
-  userAgent: string    // User-Agent del cliente
+  id: string           // VARCHAR(36), UUID
+  token: string        // VARCHAR(512), único
+  userId: string        // VARCHAR(12), FK a User
+  ipAddress: string    // VARCHAR(45)
+  userAgent: string    // VARCHAR(512)
   status: 'ACTIVE' | 'EXPIRED'
-  expiresAt: Date      // createdAt + 24 horas
   createdAt: Date
+  expiresAt: Date
 }
 ```
 
