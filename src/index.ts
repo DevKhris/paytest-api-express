@@ -1,9 +1,11 @@
 import express, { Application } from "express"
 import cookieParser from "cookie-parser"
 import logger from "morgan"
+import cors from "cors"
 
 const app: Application = express()
 
+app.use(cors())
 app.use(logger("dev"))
 app.use(express.json())
 app.use(express.urlencoded({ extended: false }))
