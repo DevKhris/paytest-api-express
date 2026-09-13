@@ -2,6 +2,7 @@ import express, { Application } from "express"
 import cookieParser from "cookie-parser"
 import logger from "morgan"
 import cors from "cors"
+import contactRoutes from "./routes/contact.routes"
 
 const app: Application = express()
 
@@ -14,6 +15,8 @@ app.use(cookieParser())
 app.get("/health", (_req, res) => {
     res.json({ message: "API is running" })
 })
+
+app.use("/contacts", contactRoutes)
 
 const PORT = process.env.PORT || 3000
 
