@@ -7,7 +7,10 @@
       "dev": "ts-node src/index.ts",
       "test": "jest",
       "test:coverage": "jest --coverage",
-      "test:watch": "jest --watch"
+      "test:watch": "jest --watch",
+      "test:ci": "jest --ci --coverage --reporters=default --coverage",
+      "lint": "eslint src/**/*.ts",
+      "build": "tsc"
    },
    "dependencies": {
       "bcrypt": "^6.0.0",
