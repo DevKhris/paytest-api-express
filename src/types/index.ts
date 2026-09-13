@@ -1,3 +1,11 @@
+import 'express'
+
+declare module 'express' {
+  interface Request {
+    correlationId?: string
+  }
+}
+
 export enum TransactionType {
   INCOME = 'INCOME',
   SPEND = 'SPEND',
