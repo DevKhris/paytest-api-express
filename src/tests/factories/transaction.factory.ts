@@ -14,8 +14,7 @@ export async function createTransaction(data: Partial<Transaction> = {}): Promis
     amount: data.amount || 10.0,
     idempotencyKey: data.idempotencyKey || generateIdempotencyKey('test'),
     description: data.description || 'Test transaction',
-    relatedUserId: data.relatedUserId || null,
-    ...data
+    relatedUserId: data.relatedUserId || undefined,
   })
 
   return transactionRepo.save(transaction)
