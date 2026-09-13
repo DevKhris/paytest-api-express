@@ -1,6 +1,11 @@
 import "reflect-metadata"
 import { DataSource, DataSourceOptions } from "typeorm"
 import * as dotenv from "dotenv"
+import { User } from './entities/User'
+import { Account } from './entities/Account'
+import { Transaction } from './entities/Transaction'
+import { Contact } from './entities/Contact'
+import { Session } from './entities/Session'
 
 dotenv.config()
 
@@ -13,7 +18,7 @@ const options: DataSourceOptions = {
     database: process.env.DB_NAME,
     synchronize: true,
     logging: false,
-    entities: [],
+    entities: [User, Account, Transaction, Contact, Session],
     migrations: [],
     subscribers: [],
 }
