@@ -14,13 +14,17 @@ export class AuthService {
   private sessionRepo = AppDataSource.getRepository(Session)
   private transactionRepo = AppDataSource.getRepository(Transaction)
 
-  async join(
-    roomCode: string,
+  validateRoomCode(roomCode: string): boolean {
+    return isValidRoomCode(roomCode)
+  }
+
+  async register(
     name: string,
     password: string,
+    roomCode: string,
     ipAddress: string,
     userAgent: string
-  ): Promise<{ user: User; account: Account; session: Session; initialBalance: number }> {
+  ): Promise<{ user: User; session: Session }> {
     if (!isValidRoomCode(roomCode)) {
       throw new Error('Invalid room code')
     }
@@ -69,7 +73,7 @@ export class AuthService {
     })
     await this.sessionRepo.save(session)
 
-    return { user, account, session, initialBalance }
+    return { user, session }
   }
 
   async login(

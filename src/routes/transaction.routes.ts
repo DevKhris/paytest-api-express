@@ -5,7 +5,7 @@ import { authenticateSession } from '../middleware/auth.middleware'
 const router: ExpressRouter = Router()
 const transactionController = new TransactionController()
 
-router.get('/', authenticateSession, transactionController.getHistory.bind(transactionController))
-router.post('/send', authenticateSession, transactionController.sendBalance.bind(transactionController))
+router.get('/', authenticateSession, transactionController.getTransactions.bind(transactionController))
+router.post('/transfer', authenticateSession, transactionController.transfer.bind(transactionController))
 
 export default router

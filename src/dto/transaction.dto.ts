@@ -1,14 +1,16 @@
 import { z } from 'zod'
 
-export const SendBalanceSchema = z.object({
-  toUserId: z.string().min(1),
-  amount: z.number().positive()
+export const SendTransferSchema = z.object({
+  toUserId: z.string().length(12),
+  amount: z.number().positive(),
+  idempotency_key: z.string().min(16).max(64),
+  description: z.string().max(255).optional()
 })
 
 export const TransactionQuerySchema = z.object({
   page: z.coerce.number().int().positive().optional().default(1),
-  limit: z.coerce.number().int().positive().max(100).optional().default(20)
+  per_page: z.coerce.number().int().positive().max(100).optional().default(20)
 })
 
-export type SendBalanceDTO = z.infer<typeof SendBalanceSchema>
+export type SendTransferDTO = z.infer<typeof SendTransferSchema>
 export type TransactionQueryDTO = z.infer<typeof TransactionQuerySchema>

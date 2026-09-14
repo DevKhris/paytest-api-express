@@ -10,18 +10,21 @@ export class ContactController {
       const contacts = await contactService.listContacts(req.userId!)
 
       res.status(200).json({
-        success: true,
-        data: contacts
+        contacts: contacts.map((c) => ({
+          id: c.id,
+          owner_id: req.userId!,
+          contact_user_id: c.id,
+          contact: {
+            id: c.id,
+            name: c.name
+          },
+          created_at: new Date().toISOString()
+        })),
+        total: contacts.length
       })
     } catch (error) {
       const message = error instanceof Error ? error.message : 'Unknown error'
-      res.status(500).json({
-        success: false,
-        error: {
-          code: 'LIST_CONTACTS_FAILED',
-          message
-        }
-      })
+      res.status(500).json({ error: message })
     }
   }
 
@@ -29,35 +32,28 @@ export class ContactController {
     try {
       const result = AddContactSchema.safeParse(req.body)
       if (!result.success) {
-        res.status(400).json({
-          success: false,
-          error: {
-            code: 'VALIDATION_ERROR',
-            message: 'Invalid request body',
-            details: result.error.flatten().fieldErrors
-          }
-        })
+        res.status(400).json({ error: 'Invalid request body' })
         return
       }
 
       const contact = await contactService.addContact(
         req.userId!,
-        result.data.userId
+        result.data.contactUserId
       )
 
       res.status(201).json({
-        success: true,
-        data: contact
+        id: contact.id,
+        owner_id: req.userId!,
+        contact_user_id: contact.id,
+        contact: {
+          id: contact.id,
+          name: contact.name
+        },
+        created_at: new Date().toISOString()
       })
     } catch (error) {
       const message = error instanceof Error ? error.message : 'Unknown error'
-      res.status(400).json({
-        success: false,
-        error: {
-          code: 'ADD_CONTACT_FAILED',
-          message
-        }
-      })
+      res.status(400).json({ error: message })
     }
   }
 
@@ -68,20 +64,11 @@ export class ContactController {
       await contactService.removeContact(req.userId!, contactId)
 
       res.status(200).json({
-        success: true,
-        data: {
-          message: 'Contact removed successfully'
-        }
+        message: 'Contact deleted'
       })
     } catch (error) {
       const message = error instanceof Error ? error.message : 'Unknown error'
-      res.status(400).json({
-        success: false,
-        error: {
-          code: 'REMOVE_CONTACT_FAILED',
-          message
-        }
-      })
+      res.status(400).json({ error: message })
     }
   }
 }

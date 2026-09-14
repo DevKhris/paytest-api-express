@@ -10,18 +10,12 @@ export class AccountController {
       const balance = await accountService.getBalance(userId)
 
       res.status(200).json({
-        success: true,
-        data: { balance }
+        balance: balance.toFixed(2),
+        currency: 'USD'
       })
     } catch (error) {
       const message = error instanceof Error ? error.message : 'Unknown error'
-      res.status(400).json({
-        success: false,
-        error: {
-          code: 'BALANCE_ERROR',
-          message
-        }
-      })
+      res.status(400).json({ error: message })
     }
   }
 }
