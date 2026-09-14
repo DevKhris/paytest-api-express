@@ -25,26 +25,32 @@ app.use(express.json())
 app.use(express.urlencoded({ extended: false }))
 app.use(cookieParser())
 
+const PORT = config.port
+
 app.get('/health', (_req: Request, res: Response) => {
-  res.json({ status: 'ok', timestamp: new Date().toISOString() })
+  const dbReady = AppDataSource.isInitialized
+  res.status(dbReady ? 200 : 503).json({
+    status: dbReady ? 'ok' : 'degraded',
+    database: dbReady ? 'connected' : 'disconnected',
+    timestamp: new Date().toISOString()
+  })
 })
 
 app.use(routes)
 
 app.use(errorHandler)
 
-const PORT = config.port
-
 AppDataSource.initialize()
   .then(() => {
     appLogger.info('Database connected')
+  })
+  .catch((error) => {
+    appLogger.error('Database connection failed, running in degraded mode', error)
+  })
+  .finally(() => {
     app.listen(PORT, () => {
       appLogger.info(`Server running on port ${PORT}`)
     })
-  })
-  .catch((error) => {
-    appLogger.error('Database connection failed', error)
-    process.exit(1)
   })
 
 export default app
