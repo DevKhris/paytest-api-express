@@ -49,7 +49,7 @@ export class ContactController {
           id: contact.contactUserId,
           name: contact.name
         },
-        created_at: new Date().toISOString()
+        created_at: contact.createdAt.toISOString()
       })
     } catch (error) {
       const message = error instanceof Error ? error.message : 'Unknown error'
