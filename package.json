@@ -3,8 +3,8 @@
    "version": "1.0.0",
    "private": true,
    "scripts": {
-      "start": "ts-node src/index.ts",
-      "dev": "ts-node src/index.ts",
+      "start": "node dist/index.js",
+      "dev": "tsc & node dist/index.js",
       "test": "jest",
       "test:coverage": "jest --coverage",
       "test:watch": "jest --watch",
