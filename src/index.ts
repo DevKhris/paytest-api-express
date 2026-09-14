@@ -12,7 +12,13 @@ import { logger as appLogger } from './config/logger'
 
 const app: Application = express()
 
-app.use(cors())
+app.use(cors({
+  origin: (process.env.CORS_ORIGINS || 'http://localhost:3001').split(','),
+  methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization'],
+  credentials: true,
+  maxAge: 86400,
+}))
 app.use(requestLogger)
 app.use(logger('dev'))
 app.use(express.json())
