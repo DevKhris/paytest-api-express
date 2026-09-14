@@ -13,10 +13,10 @@ import { config } from '../config'
 const roomCodeService = new RoomCodeService()
 
 export class AuthService {
-  private userRepo = AppDataSource.getRepository(User)
-  private accountRepo = AppDataSource.getRepository(Account)
-  private sessionRepo = AppDataSource.getRepository(Session)
-  private transactionRepo = AppDataSource.getRepository(Transaction)
+  private get userRepo() { return AppDataSource.getRepository(User) }
+  private get accountRepo() { return AppDataSource.getRepository(Account) }
+  private get sessionRepo() { return AppDataSource.getRepository(Session) }
+  private get transactionRepo() { return AppDataSource.getRepository(Transaction) }
 
   private signToken(userId: string): string {
     return jwt.sign(
