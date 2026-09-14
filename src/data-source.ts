@@ -16,6 +16,7 @@ const options: DataSourceOptions = {
     username: process.env.DB_USER,
     password: process.env.DB_PASSWORD,
     database: process.env.DB_NAME,
+    ssl: { rejectUnauthorized: false },
     synchronize: true,
     logging: false,
     entities: [User, Account, Transaction, Contact, Session],
