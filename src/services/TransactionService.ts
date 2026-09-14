@@ -5,8 +5,8 @@ import { TransactionType } from '../types'
 import { generateToken } from '../utils/idGenerator'
 
 export class TransactionService {
-  private accountRepo = AppDataSource.getRepository(Account)
-  private transactionRepo = AppDataSource.getRepository(Transaction)
+  private get accountRepo() { return AppDataSource.getRepository(Account) }
+  private get transactionRepo() { return AppDataSource.getRepository(Transaction) }
 
   private validateAmount(amount: number): void {
     if (typeof amount !== 'number' || isNaN(amount)) {

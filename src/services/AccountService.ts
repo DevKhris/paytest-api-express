@@ -4,8 +4,8 @@ import { Transaction } from '../entities/Transaction'
 import { TransactionType } from '../types'
 
 export class AccountService {
-  private accountRepo = AppDataSource.getRepository(Account)
-  private transactionRepo = AppDataSource.getRepository(Transaction)
+  private get accountRepo() { return AppDataSource.getRepository(Account) }
+  private get transactionRepo() { return AppDataSource.getRepository(Transaction) }
 
   async getAccount(userId: string): Promise<Account> {
     const account = await this.accountRepo.findOne({ where: { userId } })

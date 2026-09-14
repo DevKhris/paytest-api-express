@@ -3,8 +3,8 @@ import { Contact } from '../entities/Contact'
 import { User } from '../entities/User'
 
 export class ContactService {
-  private contactRepo = AppDataSource.getRepository(Contact)
-  private userRepo = AppDataSource.getRepository(User)
+  private get contactRepo() { return AppDataSource.getRepository(Contact) }
+  private get userRepo() { return AppDataSource.getRepository(User) }
 
   async addContact(
     ownerUserId: string,

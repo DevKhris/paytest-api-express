@@ -5,7 +5,7 @@ import { generateToken } from '../utils/idGenerator'
 import { LessThan } from 'typeorm'
 
 export class SessionService {
-  private sessionRepo = AppDataSource.getRepository(Session)
+  private get sessionRepo() { return AppDataSource.getRepository(Session) }
 
   async createSession(
     userId: string,
