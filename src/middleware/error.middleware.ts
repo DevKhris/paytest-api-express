@@ -69,7 +69,7 @@ export function errorHandler(
     res.status(err.statusCode).json({
       error: err.message,
       code: err.code,
-      ...(err.details && { details: err.details })
+      ...(err.details !== undefined && { details: err.details as unknown })
     })
     return
   }
