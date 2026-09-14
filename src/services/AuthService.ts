@@ -7,8 +7,10 @@ import { Transaction } from '../entities/Transaction'
 import { SessionStatus, TransactionType } from '../types'
 import { generateUserId, generateToken, generateIdempotencyKey } from '../utils/idGenerator'
 import { hashPassword, verifyPassword } from '../utils/password'
-import { isValidRoomCode } from '../config/roomCodes'
+import { RoomCodeService } from './RoomCodeService'
 import { config } from '../config'
+
+const roomCodeService = new RoomCodeService()
 
 export class AuthService {
   private userRepo = AppDataSource.getRepository(User)
@@ -32,8 +34,8 @@ export class AuthService {
     }
   }
 
-  validateRoomCode(roomCode: string): boolean {
-    return isValidRoomCode(roomCode)
+  async validateRoomCode(roomCode: string): Promise<boolean> {
+    return roomCodeService.isValid(roomCode)
   }
 
   async register(
@@ -43,7 +45,7 @@ export class AuthService {
     ipAddress: string,
     userAgent: string
   ): Promise<{ user: User; session: Session; expiresIn: number }> {
-    if (!isValidRoomCode(roomCode)) {
+    if (!await roomCodeService.isValid(roomCode)) {
       throw new Error('Invalid room code')
     }
 
@@ -56,6 +58,8 @@ export class AuthService {
       passwordHash
     })
     await this.userRepo.save(user)
+
+    await roomCodeService.markAsUsed(roomCode)
 
     const accountId = generateToken().substring(0, 16)
     const account = this.accountRepo.create({

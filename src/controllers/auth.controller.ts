@@ -14,7 +14,7 @@ export class AuthController {
       }
 
       const { room_code } = result.data
-      const valid = authService.validateRoomCode(room_code)
+      const valid = await authService.validateRoomCode(room_code)
 
       if (!valid) {
         res.status(400).json({ error: 'Invalid room code' })
@@ -108,6 +108,10 @@ export class AuthController {
       })
     } catch (error) {
       const message = error instanceof Error ? error.message : 'Unknown error'
+      if (message.toLowerCase().includes('not found') || message.toLowerCase().includes('invalid')) {
+        res.status(401).json({ error: 'Invalid credentials' })
+        return
+      }
       res.status(500).json({ error: message })
     }
   }
@@ -121,8 +125,9 @@ export class AuthController {
         message: 'Logout successful'
       })
     } catch (error) {
-      const message = error instanceof Error ? error.message : 'Unknown error'
-      res.status(500).json({ error: message })
+      res.status(200).json({
+        message: 'Logout successful'
+      })
     }
   }
 }

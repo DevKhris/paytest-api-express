@@ -78,7 +78,7 @@ export class TransactionController {
           res.status(404).json({ error: error.message })
           return
         }
-        if (msg.includes('insufficient')) {
+        if (msg.includes('insufficient') || msg.includes('cannot') || msg.includes('invalid amount') || msg.includes('yourself')) {
           res.status(400).json({ error: error.message })
           return
         }
