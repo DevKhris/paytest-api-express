@@ -67,7 +67,9 @@ export function errorHandler(
     })
 
     res.status(err.statusCode).json({
-      error: err.message
+      error: err.message,
+      code: err.code,
+      ...(err.details && { details: err.details })
     })
     return
   }
@@ -78,8 +80,11 @@ export function errorHandler(
     stack: err.stack
   })
 
+  const isDev = process.env.NODE_ENV !== 'production'
   res.status(500).json({
-    error: 'Internal server error'
+    error: isDev ? err.message : 'Internal server error',
+    code: 'INTERNAL_ERROR',
+    ...(isDev && { stack: err.stack })
   })
 }
 

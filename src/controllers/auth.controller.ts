@@ -6,13 +6,13 @@ const authService = new AuthService()
 
 export class AuthController {
   async validateRoomCode(req: Request, res: Response): Promise<void> {
-    try {
-      const result = RoomCodeSchema.safeParse(req.body)
-      if (!result.success) {
-        res.status(400).json({ error: 'Invalid request body' })
-        return
-      }
+    const result = RoomCodeSchema.safeParse(req.body)
+    if (!result.success) {
+      res.status(400).json({ error: result.error.flatten().fieldErrors })
+      return
+    }
 
+    try {
       const { room_code } = result.data
       const valid = await authService.validateRoomCode(room_code)
 
@@ -32,13 +32,13 @@ export class AuthController {
   }
 
   async register(req: Request, res: Response): Promise<void> {
-    try {
-      const result = RegisterSchema.safeParse(req.body)
-      if (!result.success) {
-        res.status(400).json({ error: 'Invalid request body' })
-        return
-      }
+    const result = RegisterSchema.safeParse(req.body)
+    if (!result.success) {
+      res.status(400).json({ error: result.error.flatten().fieldErrors })
+      return
+    }
 
+    try {
       const { name, password, room_code } = result.data
       const ipAddress = req.ip || req.socket.remoteAddress || 'unknown'
       const userAgent = req.headers['user-agent'] || 'unknown'
@@ -75,13 +75,13 @@ export class AuthController {
   }
 
   async login(req: Request, res: Response): Promise<void> {
-    try {
-      const result = LoginSchema.safeParse(req.body)
-      if (!result.success) {
-        res.status(400).json({ error: 'Invalid request body' })
-        return
-      }
+    const result = LoginSchema.safeParse(req.body)
+    if (!result.success) {
+      res.status(400).json({ error: result.error.flatten().fieldErrors })
+      return
+    }
 
+    try {
       const { userId, password } = result.data
       const ipAddress = req.ip || req.socket.remoteAddress || 'unknown'
       const userAgent = req.headers['user-agent'] || 'unknown'

@@ -59,8 +59,6 @@ export class AuthService {
     })
     await this.userRepo.save(user)
 
-    await roomCodeService.markAsUsed(roomCode)
-
     const accountId = generateToken().substring(0, 16)
     const account = this.accountRepo.create({
       id: accountId,
