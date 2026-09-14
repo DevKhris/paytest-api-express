@@ -15,8 +15,10 @@ export const logger = winston.createLogger({
   transports: [
     new winston.transports.Console({
       format: process.env.NODE_ENV === 'development'
-        ? combine(colorize(), timestamp(), printf(({ level, message, timestamp, context }) => {
-            return `${timestamp} [${level}]: ${message} ${JSON.stringify(context)}`
+        ? combine(colorize(), timestamp(), printf(({ level, message, timestamp, ...rest }) => {
+            const meta = rest.meta || rest
+            const metaStr = Object.keys(meta).length ? ' ' + JSON.stringify(meta) : ''
+            return `${timestamp} [${level}]: ${message}${metaStr}`
           }))
         : combine(timestamp(), json())
     })
