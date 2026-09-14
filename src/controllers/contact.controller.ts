@@ -1,6 +1,7 @@
-import { Request, Response } from 'express'
+import { Request, Response, NextFunction } from 'express'
 import { ContactService } from '../services/ContactService'
 import { AddContactSchema } from '../dto/contact.dto'
+import { NotFoundError, ConflictError, asyncHandler } from '../middleware/error.middleware'
 
 const contactService = new ContactService()
 
@@ -52,9 +53,23 @@ export class ContactController {
         created_at: contact.createdAt.toISOString()
       })
     } catch (error) {
+      if (error instanceof Error) {
+        const msg = error.message.toLowerCase()
+        if (msg.includes('already exists')) {
+          res.status(409).json({ error: error.message })
+          return
+        }
+        if (msg.includes('not found')) {
+          res.status(404).json({ error: error.message })
+          return
+        }
+        if (msg.includes('cannot add yourself')) {
+          res.status(400).json({ error: error.message })
+          return
+        }
+      }
       const message = error instanceof Error ? error.message : 'Unknown error'
-      const status = message.toLowerCase().includes('not found') ? 404 : 400
-      res.status(status).json({ error: message })
+      res.status(500).json({ error: message })
     }
   }
 
@@ -68,9 +83,12 @@ export class ContactController {
         message: 'Contact deleted'
       })
     } catch (error) {
+      if (error instanceof Error && error.message.toLowerCase().includes('not found')) {
+        res.status(404).json({ error: error.message })
+        return
+      }
       const message = error instanceof Error ? error.message : 'Unknown error'
-      const status = message.toLowerCase().includes('not found') ? 404 : 400
-      res.status(status).json({ error: message })
+      res.status(500).json({ error: message })
     }
   }
 }

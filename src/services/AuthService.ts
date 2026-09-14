@@ -1,3 +1,4 @@
+import jwt from 'jsonwebtoken'
 import { AppDataSource } from '../data-source'
 import { User } from '../entities/User'
 import { Account } from '../entities/Account'
@@ -7,12 +8,29 @@ import { SessionStatus, TransactionType } from '../types'
 import { generateUserId, generateToken, generateIdempotencyKey } from '../utils/idGenerator'
 import { hashPassword, verifyPassword } from '../utils/password'
 import { isValidRoomCode } from '../config/roomCodes'
+import { config } from '../config'
 
 export class AuthService {
   private userRepo = AppDataSource.getRepository(User)
   private accountRepo = AppDataSource.getRepository(Account)
   private sessionRepo = AppDataSource.getRepository(Session)
   private transactionRepo = AppDataSource.getRepository(Transaction)
+
+  private signToken(userId: string): string {
+    return jwt.sign(
+      { user_id: userId },
+      config.jwt.secret,
+      { expiresIn: config.jwt.expiresIn }
+    )
+  }
+
+  private decodeToken(token: string): { user_id: string } | null {
+    try {
+      return jwt.verify(token, config.jwt.secret) as { user_id: string }
+    } catch {
+      return null
+    }
+  }
 
   validateRoomCode(roomCode: string): boolean {
     return isValidRoomCode(roomCode)
@@ -58,8 +76,8 @@ export class AuthService {
     })
     await this.transactionRepo.save(transaction)
 
-    const token = generateToken()
-    const expiresIn = parseInt(process.env.JWT_EXPIRES_IN || '86400', 10)
+    const token = this.signToken(userId)
+    const expiresIn = config.jwt.expiresIn
     const expiresAt = new Date()
     expiresAt.setSeconds(expiresAt.getSeconds() + expiresIn)
 
@@ -93,8 +111,8 @@ export class AuthService {
       throw new Error('Invalid password')
     }
 
-    const token = generateToken()
-    const expiresIn = parseInt(process.env.JWT_EXPIRES_IN || '86400', 10)
+    const token = this.signToken(userId)
+    const expiresIn = config.jwt.expiresIn
     const expiresAt = new Date()
     expiresAt.setSeconds(expiresAt.getSeconds() + expiresIn)
 
@@ -123,6 +141,11 @@ export class AuthService {
   }
 
   async validateSession(token: string): Promise<Session | null> {
+    const decoded = this.decodeToken(token)
+    if (!decoded) {
+      return null
+    }
+
     const session = await this.sessionRepo.findOne({ where: { token } })
     if (!session) {
       return null

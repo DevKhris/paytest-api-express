@@ -37,7 +37,7 @@ export class TransactionController {
       })
     } catch (error) {
       const message = error instanceof Error ? error.message : 'Unknown error'
-      const status = message.toLowerCase().includes('not found') ? 404 : 400
+      const status = message.toLowerCase().includes('not found') ? 404 : 500
       res.status(status).json({ error: message })
     }
   }
@@ -72,9 +72,19 @@ export class TransactionController {
         status: 'completed'
       })
     } catch (error) {
+      if (error instanceof Error) {
+        const msg = error.message.toLowerCase()
+        if (msg.includes('not found')) {
+          res.status(404).json({ error: error.message })
+          return
+        }
+        if (msg.includes('insufficient')) {
+          res.status(400).json({ error: error.message })
+          return
+        }
+      }
       const message = error instanceof Error ? error.message : 'Unknown error'
-      const status = message.toLowerCase().includes('not found') ? 404 : 400
-      res.status(status).json({ error: message })
+      res.status(500).json({ error: message })
     }
   }
 }

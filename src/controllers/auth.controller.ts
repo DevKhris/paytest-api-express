@@ -66,7 +66,11 @@ export class AuthController {
       })
     } catch (error) {
       const message = error instanceof Error ? error.message : 'Unknown error'
-      res.status(400).json({ error: message })
+      if (message.toLowerCase().includes('invalid') || message.toLowerCase().includes('already exists')) {
+        res.status(400).json({ error: message })
+        return
+      }
+      res.status(500).json({ error: message })
     }
   }
 
@@ -104,7 +108,7 @@ export class AuthController {
       })
     } catch (error) {
       const message = error instanceof Error ? error.message : 'Unknown error'
-      res.status(401).json({ error: message })
+      res.status(500).json({ error: message })
     }
   }
 

@@ -14,6 +14,11 @@ export const config = {
     database: process.env.DB_NAME || 'paytest'
   },
 
+  jwt: {
+    secret: process.env.JWT_SECRET || 'jwt-secret-key-change-in-prod',
+    expiresIn: parseInt(process.env.JWT_EXPIRES_IN || '86400', 10)
+  },
+
   session: {
     expirationHours: 24
   },

@@ -9,7 +9,7 @@ export const SendTransferSchema = z.object({
 
 export const TransactionQuerySchema = z.object({
   page: z.coerce.number().int().positive().optional().default(1),
-  per_page: z.coerce.number().int().positive().max(100).optional().default(20)
+  per_page: z.coerce.number().int().positive().optional().default(20)
 })
 
 export type SendTransferDTO = z.infer<typeof SendTransferSchema>
