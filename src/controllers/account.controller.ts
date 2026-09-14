@@ -15,7 +15,8 @@ export class AccountController {
       })
     } catch (error) {
       const message = error instanceof Error ? error.message : 'Unknown error'
-      res.status(400).json({ error: message })
+      const status = message.toLowerCase().includes('not found') ? 404 : 400
+      res.status(status).json({ error: message })
     }
   }
 }

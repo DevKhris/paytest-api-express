@@ -21,11 +21,7 @@ export async function authenticateSession(
 
   if (!authHeader || !authHeader.startsWith('Bearer ')) {
     res.status(401).json({
-      success: false,
-      error: {
-        code: 'UNAUTHORIZED',
-        message: 'Missing or invalid authorization header'
-      }
+      error: 'Missing or invalid authorization header'
     })
     return
   }
@@ -36,11 +32,7 @@ export async function authenticateSession(
     const session = await authService.validateSession(token)
     if (!session) {
       res.status(401).json({
-        success: false,
-        error: {
-          code: 'INVALID_SESSION',
-          message: 'Session is invalid or expired'
-        }
+        error: 'Invalid or expired token'
       })
       return
     }
@@ -50,11 +42,7 @@ export async function authenticateSession(
     next()
   } catch (error) {
     res.status(500).json({
-      success: false,
-      error: {
-        code: 'INTERNAL_ERROR',
-        message: 'Failed to validate session'
-      }
+      error: 'Internal server error'
     })
   }
 }
