@@ -43,7 +43,7 @@ export class AuthController {
       const ipAddress = req.ip || req.socket.remoteAddress || 'unknown'
       const userAgent = req.headers['user-agent'] || 'unknown'
 
-      const { user, session } = await authService.register(
+      const { user, session, expiresIn } = await authService.register(
         name,
         password,
         room_code,
@@ -61,7 +61,7 @@ export class AuthController {
         token: {
           access_token: session.token,
           token_type: 'Bearer',
-          expires_in: 86400
+          expires_in: expiresIn
         }
       })
     } catch (error) {
@@ -82,7 +82,7 @@ export class AuthController {
       const ipAddress = req.ip || req.socket.remoteAddress || 'unknown'
       const userAgent = req.headers['user-agent'] || 'unknown'
 
-      const { user, session } = await authService.login(
+      const { user, session, expiresIn } = await authService.login(
         userId,
         password,
         ipAddress,
@@ -99,7 +99,7 @@ export class AuthController {
         token: {
           access_token: session.token,
           token_type: 'Bearer',
-          expires_in: 86400
+          expires_in: expiresIn
         }
       })
     } catch (error) {

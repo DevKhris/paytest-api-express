@@ -24,7 +24,7 @@ export class AuthService {
     roomCode: string,
     ipAddress: string,
     userAgent: string
-  ): Promise<{ user: User; session: Session }> {
+  ): Promise<{ user: User; session: Session; expiresIn: number }> {
     if (!isValidRoomCode(roomCode)) {
       throw new Error('Invalid room code')
     }
@@ -59,8 +59,9 @@ export class AuthService {
     await this.transactionRepo.save(transaction)
 
     const token = generateToken()
+    const expiresIn = parseInt(process.env.JWT_EXPIRES_IN || '86400', 10)
     const expiresAt = new Date()
-    expiresAt.setHours(expiresAt.getHours() + 24)
+    expiresAt.setSeconds(expiresAt.getSeconds() + expiresIn)
 
     const session = this.sessionRepo.create({
       id: generateToken().substring(0, 36),
@@ -73,7 +74,7 @@ export class AuthService {
     })
     await this.sessionRepo.save(session)
 
-    return { user, session }
+    return { user, session, expiresIn }
   }
 
   async login(
@@ -81,7 +82,7 @@ export class AuthService {
     password: string,
     ipAddress: string,
     userAgent: string
-  ): Promise<{ user: User; session: Session }> {
+  ): Promise<{ user: User; session: Session; expiresIn: number }> {
     const user = await this.userRepo.findOne({ where: { id: userId } })
     if (!user) {
       throw new Error('User not found')
@@ -93,8 +94,9 @@ export class AuthService {
     }
 
     const token = generateToken()
+    const expiresIn = parseInt(process.env.JWT_EXPIRES_IN || '86400', 10)
     const expiresAt = new Date()
-    expiresAt.setHours(expiresAt.getHours() + 24)
+    expiresAt.setSeconds(expiresAt.getSeconds() + expiresIn)
 
     const session = this.sessionRepo.create({
       id: generateToken().substring(0, 36),
@@ -107,7 +109,7 @@ export class AuthService {
     })
     await this.sessionRepo.save(session)
 
-    return { user, session }
+    return { user, session, expiresIn }
   }
 
   async logout(token: string): Promise<void> {
