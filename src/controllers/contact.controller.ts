@@ -13,12 +13,12 @@ export class ContactController {
         contacts: contacts.map((c) => ({
           id: c.id,
           owner_id: req.userId!,
-          contact_user_id: c.id,
+          contact_user_id: c.contactUserId,
           contact: {
-            id: c.id,
+            id: c.contactUserId,
             name: c.name
           },
-          created_at: new Date().toISOString()
+          created_at: c.createdAt.toISOString()
         })),
         total: contacts.length
       })
@@ -44,9 +44,9 @@ export class ContactController {
       res.status(201).json({
         id: contact.id,
         owner_id: req.userId!,
-        contact_user_id: contact.id,
+        contact_user_id: contact.contactUserId,
         contact: {
-          id: contact.id,
+          id: contact.contactUserId,
           name: contact.name
         },
         created_at: new Date().toISOString()

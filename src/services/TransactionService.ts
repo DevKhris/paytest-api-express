@@ -68,7 +68,8 @@ export class TransactionService {
     fromUserId: string,
     toUserId: string,
     amount: number,
-    idempotencyKey?: string
+    idempotencyKey?: string,
+    description?: string
   ): Promise<{ transaction: Transaction; newBalance: number }> {
     if (fromUserId === toUserId) {
       throw new Error('Cannot send to yourself')
@@ -98,7 +99,7 @@ export class TransactionService {
       fromAccount.id,
       TransactionType.SPEND,
       amount,
-      `Transfer to ${toUserId}`,
+      description || `Transfer to ${toUserId}`,
       spendKey,
       toUserId
     )
@@ -107,7 +108,7 @@ export class TransactionService {
       toAccount.id,
       TransactionType.INCOME,
       amount,
-      `Transfer from ${fromUserId}`,
+      description || `Transfer from ${fromUserId}`,
       incomeKey,
       fromUserId
     )

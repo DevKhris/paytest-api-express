@@ -9,7 +9,7 @@ export class ContactService {
   async addContact(
     ownerUserId: string,
     contactUserId: string
-  ): Promise<{ id: string; name: string }> {
+  ): Promise<{ id: string; contactUserId: string; name: string }> {
     if (ownerUserId === contactUserId) {
       throw new Error('Cannot add yourself as contact')
     }
@@ -33,21 +33,21 @@ export class ContactService {
     })
     await this.contactRepo.save(contact)
 
-    return { id: userExists.id, name: userExists.name }
+    return { id: contact.id, contactUserId: userExists.id, name: userExists.name }
   }
 
   async listContacts(
     ownerUserId: string
-  ): Promise<Array<{ id: string; name: string }>> {
+  ): Promise<Array<{ id: string; contactUserId: string; name: string; createdAt: Date }>> {
     const contacts = await this.contactRepo.find({
       where: { ownerId: ownerUserId }
     })
 
-    const result: Array<{ id: string; name: string }> = []
+    const result: Array<{ id: string; contactUserId: string; name: string; createdAt: Date }> = []
     for (const contact of contacts) {
       const user = await this.userRepo.findOne({ where: { id: contact.contactUserId } })
       if (user) {
-        result.push({ id: user.id, name: user.name })
+        result.push({ id: contact.id, contactUserId: user.id, name: user.name, createdAt: contact.createdAt })
       }
     }
 

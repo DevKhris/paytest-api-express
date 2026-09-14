@@ -56,15 +56,18 @@ export class TransactionController {
         userId,
         toUserId,
         amount,
-        idempotency_key
+        idempotency_key,
+        description
       )
+
+      const recipientBalance = await accountService.getBalance(toUserId)
 
       res.status(200).json({
         transaction_id: transaction.id,
         amount: Number(transaction.amount).toFixed(2),
         toUserId,
         sender_balance_after: newBalance.toFixed(2),
-        recipient_balance_after: '0.00',
+        recipient_balance_after: recipientBalance.toFixed(2),
         status: 'completed'
       })
     } catch (error) {
