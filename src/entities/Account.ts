@@ -6,16 +6,16 @@ export class Account {
   @PrimaryColumn({ type: 'varchar', length: 16 })
   id: string
 
-  @Column({ type: 'varchar', length: 12 })
+  @Column({ type: 'varchar', length: 12, name: 'user_id' })
   userId: string
 
   @OneToOne(() => User, (user) => user.account)
-  @JoinColumn({ name: 'userId' })
+  @JoinColumn({ name: 'user_id' })
   user: User
 
-  @CreateDateColumn()
+  @CreateDateColumn({ name: 'created_at' })
   createdAt: Date
 
-  @UpdateDateColumn()
+  @UpdateDateColumn({ name: 'updated_at' })
   updatedAt: Date
 }

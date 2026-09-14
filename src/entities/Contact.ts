@@ -6,20 +6,20 @@ export class Contact {
   @PrimaryColumn({ type: 'varchar', length: 36 })
   id: string
 
-  @Column({ type: 'varchar', length: 12 })
+  @Column({ type: 'varchar', length: 12, name: 'owner_id' })
   ownerId: string
 
-  @Column({ type: 'varchar', length: 12 })
+  @Column({ type: 'varchar', length: 12, name: 'contact_user_id' })
   contactUserId: string
 
-  @CreateDateColumn()
+  @CreateDateColumn({ name: 'created_at' })
   createdAt: Date
 
   @ManyToOne(() => User)
-  @JoinColumn({ name: 'ownerId' })
+  @JoinColumn({ name: 'owner_id' })
   owner: User
 
   @ManyToOne(() => User)
-  @JoinColumn({ name: 'contactUserId' })
+  @JoinColumn({ name: 'contact_user_id' })
   contactUser: User
 }

@@ -3,19 +3,19 @@ import { Account } from "./Account"
 
 @Entity('users')
 export class User {
-  @PrimaryColumn({ type: 'varchar', length: 12, unique: true })
+  @PrimaryColumn({ type: 'varchar', length: 12 })
   id: string
 
   @Column({ type: 'varchar', length: 50 })
   name: string
 
-  @Column({ type: 'varchar', length: 255 })
+  @Column({ type: 'varchar', length: 255, name: 'password_hash' })
   passwordHash: string
 
-  @CreateDateColumn()
+  @CreateDateColumn({ name: 'created_at' })
   createdAt: Date
 
-  @UpdateDateColumn()
+  @UpdateDateColumn({ name: 'updated_at' })
   updatedAt: Date
 
   @OneToOne(() => Account)
